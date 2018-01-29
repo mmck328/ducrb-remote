@@ -1,0 +1,50 @@
+// http://ionicframework.com/docs/v2/theming/
+
+.row {
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.col {
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
+  align-self: center;
+}
+
+.grid {
+  ion-col {
+/*    background-color: #f0f5ff;*/
+    text-align: center;
+  }
+  ion-col ion-label {
+  	text-align: center;
+  	margin: 2%;
+  }
+}
+
+ion-select[full] {
+  max-width: 100%;
+}
+
+ion-card {
+  padding: 2%;
+}
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.

@@ -1,0 +1,14 @@
+page-home {
+
+	@media only screen and (orientation:landscape), only screen and (min-width: 540px) {
+		.leftContent{
+			width:48.3%;
+			float:left;
+		}
+		.rightContent{
+			width:48.3%;
+			float:right;
+		}	 
+	}
+
+}

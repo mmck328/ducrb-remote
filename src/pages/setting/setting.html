@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Setting
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-list no-lines>
+		<ion-list-header>
+			Account
+		</ion-list-header>	
+		<form>
+			<ion-item>
+				<ion-input type="email" name="username" [(ngModel)]="accountSvc.username" placeholder="Username"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-input type="password" name="password" [(ngModel)]="accountSvc.password" placeholder="Password"></ion-input>
+			</ion-item>
+			<ion-item>
+			<button ion-button block (click)="onPushed()">Set Account</button>
+			</ion-item>
+		</form>
+		<ion-list-header>
+			About
+		</ion-list-header>
+		<ion-item>
+			DUCRB Remote
+			<address>&copy; <a href="mailto:masaki.kawaguchi@koshizuka-lab.org">Masaki Kawaguchi</a>
+			</address>
+		</ion-item>
+	</ion-list>
+</ion-content>

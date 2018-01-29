@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Test
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+<!--   <button ion-button (click)=testget()>
+    testget
+  </button>  
+  <button ion-button (click)=testpost()>
+    testpost
+  </button>
+  <button ion-button (click)=testput()>
+    testput
+  </button>
+  
+
+  <p>
+    <button ion-button (click)=writesome()>writesome</button>
+  </p>
+  <p>
+    <button ion-button [outline]="some.field1 ? true : false">some</button>
+    <button ion-button [outline]="null ? true : false">null</button>
+    <button ion-button [outline]="1 ? true : false">1</button>
+  </p> -->
+  <ion-select interface="popover">
+    <ion-option ng-repeat="item in ary" [value]="item">
+      {{item}}
+    </ion-option>
+  </ion-select>
+
+
+  <ion-list>
+    <ion-list-header>Follow us on Twitter</ion-list-header>
+    <ion-item>
+      <ion-icon name="ionic" item-left></ion-icon>
+      @ionicframework
+    </ion-item>
+  </ion-list>
+</ion-content>
