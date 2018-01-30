@@ -45,6 +45,8 @@ export class ApiServiceProvider {
   debug: boolean;
 
   constructor(private events: Events, private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
+    this.http.setDataSerializer('json')
+    
     this.roomId = "A305";
     this.lightId = new Array(5);
     this.lightAttribute = new Array(5);
@@ -216,18 +218,17 @@ export class ApiServiceProvider {
                          "X-UIDC-Authorization-Token": token, 
                          "Content-Type": "application/json" 
                        };
-          cordovaHTTP.put(uri, body, header, 
-            (res => {
-              console.log("putAcState(" +  index + ") successed. API returned \n" + res.data);
-              resolve();
-              // this.getLightState(index).then().catch();
-            }),  
-            (res => {
-              console.log("Failed to put Ac state (" + index + ") : " + res.error);
-              reject(res.error);
-            }));
+          return this.http.put(uri, body, header);
         })
-        .catch((err) => reject(err));
+        .then(res => {
+          console.log("putAcState(" +  index + ") successed. API returned \n" + res.data);
+          resolve();
+          // this.getLightState(index).then().catch();
+        })
+        .catch(res => {
+          console.log("Failed to put Ac state (" + index + ") : " + res.error);
+          reject(res.error);
+        });
     });
   }  
 
@@ -288,21 +289,18 @@ export class ApiServiceProvider {
       this.accountSvc.getToken()
         .then(token => {
           let header = { "X-UIDC-Authorization-Token": token };
-          cordovaHTTP.put(uri, body, header, 
-            (res => {
-              console.log("putLightState(" +  index + ", " + value + ") successed. API returned \n" + res.data);
-              resolve();
-              // this.getLightState(index).then().catch();
-            }),  
-            (res => {
-              console.log("Failed to put light power (" + index + ") to be " + value + " : " + res.error);
-              reject(res.error);
-            }));
+          return this.http.put(uri, body, header);
         })
-        .catch((err) => reject(err));
+        .then(res => {
+          console.log("putLightState(" +  index + ", " + value + ") successed. API returned \n" + res.data);
+          resolve();
+            // this.getLightState(index).then().catch();
+        })
+        .catch(res => {
+          console.log("Failed to put light power (" + index + ") to be " + value + " : " + res.error);
+          reject(res.error);
+        });
     });
-    
-
 
     // return new Promise<number>((resolve, reject) => {
     //   cordovaHTTP.put(uri, body, header,

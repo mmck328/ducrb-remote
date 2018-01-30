@@ -12,7 +12,6 @@ import 'rxjs/add/operator/map';
 */
 
 const API_ENDPOINT = 'http://172.31.8.129/api/1.0/'
-declare var cordovaHTTP: any;
 
 @Injectable()
 export class AccountServiceProvider {
@@ -71,7 +70,7 @@ export class AccountServiceProvider {
     this.username = user;
     this.password = pass;
     this.storage.set('username', this.username);
-    this.storage.set('password', this.password)
+    this.storage.set('password', this.password);
   }
 
   getAccount(user, pass) {
@@ -95,7 +94,7 @@ export class AccountServiceProvider {
           }
         ).catch(
           error => {
-            reject("Failed to get token");
+            reject("Failed to get token: " + error.toString());
           }
         );
       // } else {

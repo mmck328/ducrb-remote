@@ -25,10 +25,10 @@ export class SettingPage {
 
   onPushed() {
     this.accountSvc.setAccount(this.accountSvc.username, this.accountSvc.password);
+    this.toastSvc.presentOKToast("Account set to \"" + this.accountSvc.username + "\"");
     this.accountSvc.getToken().catch(err => {
       this.toastSvc.presentOKToast(err);
     });
-    this.toastSvc.presentOKToast("Account set to \"" + this.accountSvc.username + "\"");
   }
 
 }

@@ -22,13 +22,16 @@ export class HomePage {
 
   doRefresh(refresher) {
     console.log("Refresh");
-    this.apiSvc.reloadAttribute()
-      // .then(() => this.apiSvc.reloadState())
-      .then(() => this.apiSvc.reloadStateSequence())
-      .then(refresher.complete())
-      .catch(err => {
-        refresher.complete();
-        this.toastSvc.presentToast("ERROR: " + err.status);
+    this.apiSvc.getRoomAttribute()
+      .then(() => {
+        this.apiSvc.reloadAttribute()
+        // .then(() => this.apiSvc.reloadState())
+        .then(() => this.apiSvc.reloadStateSequence())
+        .then(refresher.complete())
+        .catch(err => {
+          refresher.complete();
+          this.toastSvc.presentToast("ERROR: " + err.status);
+        });
       });
   }
 
