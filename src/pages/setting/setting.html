@@ -22,6 +22,21 @@
 			<button ion-button block (click)="onPushed()">Set Account</button>
 			</ion-item>
 		</form>
+
+		<ion-list-header>
+			Configuration
+		</ion-list-header>
+		<ion-item>
+			<ion-label>Room</ion-label>
+			<ion-select item-end [(ngModel)]="apiSvc.roomId" interface="popover" (ionChange)="onRoomChanged()">
+				<ion-option [value]="'A304'">
+					A304
+				</ion-option>
+				<ion-option [value]="'A305'">
+					A305
+				</ion-option>
+			</ion-select>
+		</ion-item>
 		<ion-list-header>
 			About
 		</ion-list-header>

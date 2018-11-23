@@ -46,7 +46,7 @@ export class ApiServiceProvider {
   constructor(private events: Events, private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
     this.http.setDataSerializer('json')
     
-    this.roomId = "A305";
+    this.roomId = 'A305';
     this.lightId = new Array(5);
     this.lightAttribute = new Array(5);
     this.lightPower = new Array(0, 0, 0, 0, 0);
@@ -65,7 +65,7 @@ export class ApiServiceProvider {
       // .then(() => this.reloadState())
       .then(() => this.reloadStateSequence())
       // .then()
-      .catch(err => console.log(err));
+      .catch((err) => this.toastSvc.presentOKToast('ERROR: ' + err.status + ' ' + err.error));
   }
 
   getRoomAttribute() {
@@ -114,10 +114,13 @@ export class ApiServiceProvider {
 
   reloadState() {
     let promises = [];
-    // this.lightId.forEach((id, index) => {
-    //   promises.push(this.getLightState(index));
-    // });
-    promises.push(this.getAllLightState());
+    if (this.roomId == 'A305') {
+      promises.push(this.getAllLightState());
+    } else {
+      this.lightId.forEach((id, index) => {
+        promises.push(this.getLightState(index));
+      });
+    }
     this.ac.forEach((aircon, index) => {
       promises.push(this.getAcState(index));
     });
@@ -133,10 +136,13 @@ export class ApiServiceProvider {
 
   reloadStateSequence() {
     let tasks = [];
-    // this.lightId.forEach((id, index) => {
-    //   tasks.push(() => this.getLightState(index));
-    // });
-    tasks.push(() => this.getAllLightState());
+    if (this.roomId == 'A305') {
+      tasks.push(() => this.getAllLightState());
+    } else {
+      this.lightId.forEach((id, index) => {
+        tasks.push(() => this.getLightState(index));
+      });
+    }
     this.ac.forEach((aircon, index) => {
       tasks.push(() => this.getAcState(index));
     });

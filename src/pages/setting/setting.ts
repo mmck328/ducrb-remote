@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
+import { ApiServiceProvider } from '../../providers/api-service/api-service'
 import { SimpleToastServiceProvider } from '../../providers/simple-toast-service/simple-toast-service';
 
 @Component({
@@ -12,7 +13,7 @@ export class SettingPage {
   // username: string;
   // password: string;
 
-  constructor(public navCtrl: NavController, private alertCtrl: AlertController, private accountSvc: AccountServiceProvider, private toastSvc: SimpleToastServiceProvider) {
+  constructor(public navCtrl: NavController, private alertCtrl: AlertController, private accountSvc: AccountServiceProvider, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
   }
 
   presentAlert() {
@@ -31,4 +32,8 @@ export class SettingPage {
     });
   }
 
+  onRoomChanged() {
+    console.log("ApiService.roomId = " + this.apiSvc.roomId)
+    this.apiSvc.init();
+  }
 }

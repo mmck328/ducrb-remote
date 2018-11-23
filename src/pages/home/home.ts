@@ -27,7 +27,7 @@ export class HomePage {
         .then(refresher.complete())
         .catch(err => {
           refresher.complete();
-          this.toastSvc.presentToast("ERROR: " + err.status);
+          this.toastSvc.presentToast('ERROR: ' + err.status + ' ' + err.error);
         });
       });
   }
