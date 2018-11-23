@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HTTP } from '@ionic-native/http';
+import { Events } from 'ionic-angular'
 import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
 import { SimpleToastServiceProvider } from '../simple-toast-service/simple-toast-service'
 import 'rxjs/add/operator/map';
@@ -19,43 +20,39 @@ export class AccountServiceProvider {
   password: string;
   token: any;
   timeAcquired: Date;
-  secureStorage: SecureStorage;
   storage: SecureStorageObject;
 
-  constructor(private http: HTTP, private toastSvc: SimpleToastServiceProvider) {
-    this.secureStorage = new SecureStorage();
-    this.secureStorage.create('DUCRB_API')
-      .then((storage) => {
-        this.storage = storage
-        this.storage.get('username')
-          .then((data) => {this.username = data})
-          .catch((err) => {
-            console.log(err)
-            this.username = ""
-          });
-        this.storage.get('password')
-          .then((data) => {this.password = data})
-          .catch((err) => {
-            console.log(err)
-            this.password = ""
-          });        
-      })
-      .catch((err) => {this.toastSvc.presentOKToast(err)});
+  constructor(private events: Events, private http: HTTP, private secureStorage: SecureStorage, private toastSvc: SimpleToastServiceProvider) {
     this.token = null;
     this.timeAcquired = new Date(0);
-    document.addEventListener("deviceready", this.onDeviceReady, false);
+    document.addEventListener("deviceready", this.onDeviceReady.bind(this), false);
   }
 
   onDeviceReady() {
     console.log("device ready");
-    // (new SecureStorage).create('ducrb_ss').then(
-    //   (storage: SecureStorageObject) => {
-    //     this.ss = storage;
-    //     console.log("SS initialized");
-    //   }
-    // ).catch(err => console.log("Failed to initialize ss: " + err));
-    // this.ss.get('username').then(user => username = user).catch();
-    // this.ss.get('password').then(pass => password = pass).catch();
+
+    this.secureStorage.create('DUCRB_API')
+      .then((storage) => {
+        this.storage = storage;
+        this.storage.get('username')
+          .then((data) => {
+            this.username = data;
+            console.log('username found: ' + data.toString());
+            return this.storage.get('password');
+          })
+          .then((data) => {
+            this.password = data;
+            this.events.publish('accountloaded');
+          })
+          .catch((err) => {
+            console.log('account infomation not found');
+            this.toastSvc.presentOKToast("Please set account on \"Setting\" tab.");
+            console.log(err);
+            this.username = null;
+            this.password = null;
+          });
+      })
+      .catch((err) => {this.toastSvc.presentOKToast(err)});
   }
 
   setAccount(user: string, pass: string) {
@@ -71,6 +68,7 @@ export class AccountServiceProvider {
     this.password = pass;
     this.storage.set('username', this.username);
     this.storage.set('password', this.password);
+    this.events.publish('accountloaded');
   }
 
   getAccount(user, pass) {
@@ -79,7 +77,7 @@ export class AccountServiceProvider {
 
   getToken() {
     return new Promise<string>((resolve, reject) => {
-      // if (Date.now() - this.timeAcquired.getTime() > 24 * 60 * 60 * 1000) {
+      if (Date.now() - this.timeAcquired.getTime() > 24 * 60 * 60 * 1000) {
         let uri = API_ENDPOINT + 'auth/token';
         // this.token = this.http.get(uri).map(this.extractToken).catch(this.handleError).;
         let body = { "email": this.username }
@@ -97,9 +95,9 @@ export class AccountServiceProvider {
             reject("Failed to get token: " + error.toString());
           }
         );
-      // } else {
-        // resolve(this.token);
-      // }
+      } else {
+        resolve(this.token);
+      }
     });
   }
 }

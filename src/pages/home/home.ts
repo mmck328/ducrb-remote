@@ -13,11 +13,8 @@ export class HomePage {
   mode: string;
   constructor(public navCtrl: NavController, private events: Events, private accountSvc: AccountServiceProvider, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
     this.mode = "manipulate";
-    if (this.accountSvc.username != undefined && this.accountSvc.password != undefined) {
-      this.apiSvc.init();
-    } else {
-      this.toastSvc.presentOKToast("Please set account on \"Setting\" tab.");
-    }
+    
+    this.events.subscribe('accountloaded', () => { this.apiSvc.init() });
   }
 
   doRefresh(refresher) {
