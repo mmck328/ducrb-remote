@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { NgZone } from '@angular/core'
 import { NavController } from 'ionic-angular';
 import { Events } from 'ionic-angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -10,10 +11,11 @@ import { SimpleToastServiceProvider } from '../../providers/simple-toast-service
 })
 export class HomePage {
   mode: string;
-  constructor(public navCtrl: NavController, private events: Events, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
+  constructor(public navCtrl: NavController, private events: Events, private zone: NgZone, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
     this.mode = "manipulate";
     
     this.events.subscribe('accountloaded', () => { this.apiSvc.init() });
+    this.events.subscribe('refreshhome', () => { this.zone.run(() => {}) }); // force refresh
   }
 
   doRefresh(refresher) {

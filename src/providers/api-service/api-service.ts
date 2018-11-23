@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HTTP } from '@ionic-native/http';
+import { Events } from 'ionic-angular';
 import { AccountServiceProvider } from '../account-service/account-service';
 import { SimpleToastServiceProvider } from '../simple-toast-service/simple-toast-service'
 import 'rxjs/add/operator/map';
@@ -42,7 +43,7 @@ export class ApiServiceProvider {
 
   debug: boolean;
 
-  constructor(private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
+  constructor(private events: Events, private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
     this.http.setDataSerializer('json')
     
     this.roomId = 'A305';
@@ -62,8 +63,11 @@ export class ApiServiceProvider {
     this.getRoomAttribute()
       .then(() => { return this.reloadAttributeSequence() })
       // .then(() => this.reloadState())
-      .then(() => { return this.reloadStateSequence() })
-      // .then()
+      .then(() => { 
+        this.events.publish('refreshhome');
+        return this.reloadStateSequence();
+      })
+      .then(() => this.events.publish('refreshhome'))
       .catch((err) => this.toastSvc.presentOKToast('ERROR: ' + err.status + ' ' + err.error));
   }
 
