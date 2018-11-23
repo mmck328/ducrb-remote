@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Events } from 'ionic-angular';
-import { AccountServiceProvider } from '../../providers/account-service/account-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { SimpleToastServiceProvider } from '../../providers/simple-toast-service/simple-toast-service';
 
@@ -11,7 +10,7 @@ import { SimpleToastServiceProvider } from '../../providers/simple-toast-service
 })
 export class HomePage {
   mode: string;
-  constructor(public navCtrl: NavController, private events: Events, private accountSvc: AccountServiceProvider, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
+  constructor(public navCtrl: NavController, private events: Events, private apiSvc: ApiServiceProvider, private toastSvc: SimpleToastServiceProvider) {
     this.mode = "manipulate";
     
     this.events.subscribe('accountloaded', () => { this.apiSvc.init() });
@@ -19,17 +18,17 @@ export class HomePage {
 
   doRefresh(refresher) {
     console.log("Refresh");
-    this.apiSvc.getRoomAttribute()
-      .then(() => {
-        this.apiSvc.reloadAttribute()
-        // .then(() => this.apiSvc.reloadState())
-        .then(() => this.apiSvc.reloadStateSequence())
-        .then(refresher.complete())
-        .catch(err => {
-          refresher.complete();
-          this.toastSvc.presentToast('ERROR: ' + err.status + ' ' + err.error);
-        });
-      });
+    this.apiSvc.reloadAttributeSequence()
+    // .then(() => this.apiSvc.reloadState())
+    .then(() => { return this.apiSvc.reloadStateSequence() })
+    .then(() => {
+      refresher.complete();
+      console.log("Refresh complete")
+    })
+    .catch(err => {
+      refresher.complete();
+      this.toastSvc.presentToast('ERROR: ' + err.status + ' ' + err.error);
+    });
   }
 
   onLightPushed(index: number) {

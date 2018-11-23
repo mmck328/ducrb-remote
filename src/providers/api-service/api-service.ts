@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Events } from 'ionic-angular'
 import { HTTP } from '@ionic-native/http';
 import { AccountServiceProvider } from '../account-service/account-service';
 import { SimpleToastServiceProvider } from '../simple-toast-service/simple-toast-service'
@@ -11,14 +10,14 @@ import 'rxjs/add/operator/map';
   See https://angular.io/docs/ts/latest/guide/dependency-injection.html
   for more info on providers and Angular 2 DI.
 */
-function sequenceTasks(tasks) {
+function sequenceTasks(tasks): Promise<any> {
   function recordValue(results, value) {
-      results.push(value);
-      return results;
+    results.push(value);
+    return results;
   }
-  var pushValue = recordValue.bind(null, []);
-  return tasks.reduce(function (promise, task) {
-      return promise.then(task).then(pushValue);
+  let pushValue = recordValue.bind(null, []);
+  return tasks.reduce((promise, task) => {
+    return promise.then(task).then(pushValue);
   }, Promise.resolve());
 }
 
@@ -43,7 +42,7 @@ export class ApiServiceProvider {
 
   debug: boolean;
 
-  constructor(private events: Events, private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
+  constructor(private http: HTTP, private toastSvc: SimpleToastServiceProvider, private accountSvc: AccountServiceProvider) {
     this.http.setDataSerializer('json')
     
     this.roomId = 'A305';
@@ -61,9 +60,9 @@ export class ApiServiceProvider {
 
   init() {
     this.getRoomAttribute()
-      .then(() => this.reloadAttribute())
+      .then(() => { return this.reloadAttributeSequence() })
       // .then(() => this.reloadState())
-      .then(() => this.reloadStateSequence())
+      .then(() => { return this.reloadStateSequence() })
       // .then()
       .catch((err) => this.toastSvc.presentOKToast('ERROR: ' + err.status + ' ' + err.error));
   }
@@ -112,6 +111,17 @@ export class ApiServiceProvider {
 
   }
 
+  reloadAttributeSequence(force: boolean = false) {
+    let tasks = [];
+    this.ac.forEach((aircon, index) => {
+      if (force || (aircon.attribute === undefined)) {
+        tasks.push(this.getAcAttribute(index));
+      }
+    });
+
+    return sequenceTasks(tasks);
+  }
+
   reloadState() {
     let promises = [];
     if (this.roomId == 'A305') {
@@ -150,7 +160,7 @@ export class ApiServiceProvider {
       tasks.push(() => this.getSensorState(index));
     });
 
-    sequenceTasks(tasks);
+    return sequenceTasks(tasks);
   }
 
   getLightAttribute(index: number) {
