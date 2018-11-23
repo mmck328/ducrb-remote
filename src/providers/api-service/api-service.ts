@@ -24,7 +24,6 @@ function sequenceTasks(tasks) {
 
 const API_ENDPOINT = 'http://172.31.8.129/api/1.0/';
 const LIGHT_STATE = 'http://172.27.2.20/';
-declare var cordovaHTTP: any;
 
 @Injectable()
 export class ApiServiceProvider {
